@@ -1,5 +1,6 @@
 import { readFile } from 'fs/promises';
-import { URL } from 'url';
+import { resolve, dirname } from 'path';
+import { argv } from 'process';
 
 const { createHash } = await import('crypto');
 
@@ -17,7 +18,9 @@ export const calculateHash = async () => {
 };
 
 const getFilePath = (fileName) => {
-    return new URL(fileName, import.meta.url).pathname;
+    const folder = dirname(argv[1]);
+
+    return resolve(folder, fileName);
 }
 
 console.log(await calculateHash());
