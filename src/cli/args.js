@@ -1,7 +1,7 @@
-import process from 'process';
+import { argv } from 'process';
 
 export const parseArgs = () => {
-    const args = process.argv.slice(2);
+    const args = argv.slice(2);
     let formattedArgs = [];
 
     for(let i = 0; i < args.length; i += 2) {

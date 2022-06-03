@@ -1,5 +1,6 @@
 import { access, constants, rename as renameFile } from 'fs';
-import { URL } from 'url';
+import { resolve, dirname } from 'path';
+import { argv } from 'process';
 
 export const rename = async () => {
     const oldPath = getFilePath('./files/wrongFilename.txt');
@@ -19,7 +20,9 @@ export const rename = async () => {
 };
 
 const getFilePath = (fileName) => {
-    return new URL(fileName, import.meta.url).pathname;
+    const folder = dirname(argv[1]);
+
+    return resolve(folder, fileName);
 }
 
 rename();

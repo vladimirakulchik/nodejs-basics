@@ -1,9 +1,10 @@
 import { copyFile, mkdir, readdir } from 'fs';
-import { URL } from 'url';
+import { resolve, dirname } from 'path';
+import { argv } from 'process';
 
 export const copy = async () => {
-    const folder = './files';
-    const newFolder = './files_copy';
+    const folder = getFolderPath('./files');
+    const newFolder = getFolderPath('./files_copy');
     const options = {
         encoding: 'utf8',
         withFileTypes: true,
@@ -35,11 +36,16 @@ export const copy = async () => {
     });
 };
 
+const getFolderPath = (folder) => {
+    const dir = dirname(argv[1]);
+
+    return resolve(dir, folder);
+}
+
 const getFilePath = (folder, fileName) => {
-    return new URL(
-        folder + '/' + fileName, 
-        import.meta.url
-    ).pathname;
+    const dir = dirname(argv[1]);
+
+    return resolve(dir, folder, fileName);
 }
 
 copy();

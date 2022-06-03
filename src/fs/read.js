@@ -1,10 +1,11 @@
 import { readFile } from 'fs';
-import { URL } from 'url';
+import { resolve, dirname } from 'path';
+import { argv } from 'process';
 
 export const read = async () => {
-    const filename = getFilePath('./files/fileToRead.txt');
+    const filePath = getFilePath('./files/fileToRead.txt');
 
-    readFile(filename, 'utf8', (err, data) => {
+    readFile(filePath, 'utf8', (err, data) => {
         if (err && 'ENOENT' === err.code) {
             throw new Error('FS operation failed');
         }
@@ -14,7 +15,9 @@ export const read = async () => {
 };
 
 const getFilePath = (fileName) => {
-    return new URL(fileName, import.meta.url).pathname;
+    const folder = dirname(argv[1]);
+
+    return resolve(folder, fileName);
 }
 
 read();

@@ -1,12 +1,13 @@
 import { writeFile } from 'fs';
-import { URL } from 'url';
+import { resolve, dirname } from 'path';
+import { argv } from 'process';
 
 export const create = async () => {
-    const filename = getFilePath('./files/fresh.txt');
+    const filePath = getFilePath('./files/fresh.txt');
     const data = 'I am fresh and young';
 
     writeFile(
-        filename,
+        filePath,
         data,
         { flag: 'wx' },
         (err) => {
@@ -18,7 +19,9 @@ export const create = async () => {
 };
 
 const getFilePath = (fileName) => {
-    return new URL(fileName, import.meta.url).pathname;
+    const folder = dirname(argv[1]);
+
+    return resolve(folder, fileName);
 }
 
 create();

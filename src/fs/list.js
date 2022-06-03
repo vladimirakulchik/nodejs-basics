@@ -1,5 +1,6 @@
 import { readdir } from 'fs';
-import { URL } from 'url';
+import { resolve, dirname } from 'path';
+import { argv } from 'process';
 
 export const list = async () => {
     const folder = getFilePath('./files');
@@ -22,7 +23,9 @@ export const list = async () => {
 };
 
 const getFilePath = (fileName) => {
-    return new URL(fileName, import.meta.url).pathname;
+    const folder = dirname(argv[1]);
+
+    return resolve(folder, fileName);
 }
 
 list();
