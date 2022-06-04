@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import { createServer as createServerHttp } from 'http';
 import { release, version } from 'os';
 import { sep, dirname } from 'path';
-import { argv } from 'process';
+import { fileURLToPath } from 'url';
 import './files/c.js';
 
 const loadJson = async (fileName) => {
@@ -14,8 +14,8 @@ const loadJson = async (fileName) => {
     );
 };
 
-const __filename = argv[1];
-const __dirname = dirname(argv[1]);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const random = Math.random();
 
 export const unknownObject = random > 0.5 
