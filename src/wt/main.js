@@ -1,6 +1,7 @@
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { Worker } from 'worker_threads';
+import { cpus } from 'os';
 
 const getFilePath = (fileName) => {
     const folder = dirname(fileURLToPath(import.meta.url));
@@ -11,15 +12,11 @@ const getFilePath = (fileName) => {
 const runWorker = (filePath, workerData) => {
     return new Promise((resolve, reject) => {
         const worker = new Worker(filePath, { workerData });
-        worker.on('message', (result) => {
-            resolve(result);
-        });
-        worker.on('error', (err) => {
-            reject(err);
-        });
+        worker.on('message', resolve);
+        worker.on('error', reject);
         worker.on('exit', (code) => {
-            if (code !== 0) {
-                reject(new Error(`Worker stopped with exit code ${code}`));
+            if (0 !== code) {
+                reject(new Error(`Exit code: ${code}`));
             }
         });
     });
@@ -27,19 +24,31 @@ const runWorker = (filePath, workerData) => {
 
 export const performCalculations = async () => {
     const filePath = getFilePath('./worker.js');
+    const workerCount = cpus().length;
+    const workers = [];
+    let workerData = 10;
 
-    // create array of runWorkers
+    for (let i = 0; i < workerCount; i++) {
+        workers.push(runWorker(filePath, workerData++));
+    }
 
-    return Promise.all([
-        runWorker(filePath, 10),
-        runWorker(filePath, 11)
-    ]).then(values => {
-        return values;
+    return Promise.allSettled(workers).then((results) => {
+        return results.map((result) => {
+            if ('fulfilled' === result.status) {
+                return {
+                    status: 'resolved',
+                    data: result.value,
+                };
+            }
+
+            return {
+                status: 'error',
+                data: null,
+            };
+        })
     });
 };
 
 performCalculations().then((result) => {
-    console.log('Result:', result);
-}).catch((err) => {
-    console.error(err)
+    console.log(result);
 });
