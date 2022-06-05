@@ -40,12 +40,12 @@ const getFolderPath = (folder) => {
     const dir = dirname(argv[1]);
 
     return resolve(dir, folder);
-}
+};
 
 const getFilePath = (folder, fileName) => {
     const dir = dirname(argv[1]);
 
     return resolve(dir, folder, fileName);
-}
+};
 
 copy();

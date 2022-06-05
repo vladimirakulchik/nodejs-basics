@@ -13,6 +13,6 @@ const getFilePath = (fileName) => {
     const folder = dirname(argv[1]);
 
     return resolve(folder, fileName);
-}
+};
 
 read();
